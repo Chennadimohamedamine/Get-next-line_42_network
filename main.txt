@@ -1,0 +1,24 @@
+char	*read_line(char *v_s, int fd)
+{
+	char	*str;
+	char	*line;
+	char	*temp;
+	int		r;
+	int		g;
+
+	str = (char *)malloc((size_t)BUFFER_SIZE + 1);
+	r = 1;
+	line = strdup("");
+	g = 0;
+	while (r > 0 && g != 1)
+	{
+		r = read(fd, str, BUFFER_SIZE);
+		if (r < 0)
+			return (free(str), free(line), NULL);
+		str[r] = '\0';
+		temp = get_line(v_s, line, str, &g);
+		free(line);
+		line = temp;
+	}
+	return (free(str), line);
+}

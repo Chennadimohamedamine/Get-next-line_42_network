@@ -6,82 +6,103 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:24 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/19 04:43:11 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/20 06:01:57 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_line_newline(char *v, char *s, int r)
+static char	*get_line_newline(char *v, char *s)
 {
 	char	*str;
 	int		i;
 	int		j;
 
-	str = (char *)malloc(search(s) + 2);
+	str = (char *)malloc(BUFFER_SIZE + 1);
+	if(!str)
+		return (NULL);
 	i = 0;
 	while (s[i])
 	{
+		if(s[i] == '\n'){
+			str[i++] = '\n';
+			break;
+		}
 		str[i] = s[i];
-		if (s[i] == '\n')
-			break ;
 		i++;
 	}
-	str[++i] = '\0';
+	str[i] = '\0';
 	j = 0;
-	while (i < r)
+	while (s[i])
 		v[j++] = s[i++];
 	v[j] = '\0';
 	return (str);
 }
 
-char	*get_line(char *v, char *l, char *s, int *g)
-{
-	char	*temp;
-	char	*line;
+// char *get_line_newline(char *v, char *s, int r) {
+//     char *str;
+//     int i, j;
 
-	if (v[0] != '\0')
-	{
-		temp = get_line_newline(v, v, BUFFER_SIZE);
-		line = join_line(temp, s);
-		free(temp);
+//     str = (char *)malloc(r + 1); // Allocate memory for the entire string
+//     i = 0;
+//     while (s[i] && s[i] != '\n') {
+//         str[i] = s[i];
+//         i++;
+//     }
+//     if (s[i] == '\n') {
+//         str[i++] = '\n';
+//     }
+//     str[i] = '\0'; 
+//     j = 0;
+//     while (i < r)
+//         v[j++] = s[i++];
+//     v[j] = '\0'; 
+//     return str;
+// }
+static char	*get_line(char *v, char *l, char *s)
+{
+	char *newline;
+	char *line;
+	if(v[0] != 0 && !l){
+		l = get_line_newline(v,v);
 	}
-	else if (check(s))
+	if(check(s))
 	{
-		*g = 1;
-		temp = get_line_newline(v, s, BUFFER_SIZE);
-		line = join_line(l, temp);
-		free(temp);
+		newline = get_line_newline(v,s);
+		line = join_line(l,newline);
+		return (free(newline),line);
 	}
 	else
-		line = join_line(l, s);
-	 if (line[0] == '\0')
-	 	return (free(line), NULL);
+		line = join_line(l,s);
 	return (line);
 }
 
-char	*read_line(char *v_s, int fd)
+static char	*read_line(char *v, int fd)
 {
-	char	*str;
 	char	*line;
-	char	*temp;
+	char	*str;
 	int		r;
-	int		g;
 
 	str = (char *)malloc((size_t)BUFFER_SIZE + 1);
+	if(!str)
+		return (NULL);
 	r = 1;
-	line = strdup("");
-	g = 0;
-	while (r > 0 && g != 1)
+	line = NULL;
+	while (r > 0)
 	{
-		r = read(fd, str, BUFFER_SIZE);
+		r = read(fd,str, BUFFER_SIZE);
 		if (r < 0)
-			return (free(str), free(line), NULL);
+		{
+			v[0] = 0;
+		 	return (free(str),free(line), NULL);	
+		}
 		str[r] = '\0';
-		temp = get_line(v_s, line, str, &g);
-		free(line);
-		line = temp;
+		line = get_line(v, line, str);
+		if(check(str) || r == 0)
+			break;
 	}
+	if(line[0] == 0)
+		return (free(str),free(line),NULL);
 	return (free(str), line);
 }
 

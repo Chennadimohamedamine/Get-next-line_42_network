@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:41 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/19 04:43:39 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/20 06:00:05 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,23 @@ int	count_s(char *s)
 	int	i;
 
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 		i++;
 	return (i);
 }
 
-int	search(char *s)
+int    search(char *s)
 {
-	int	i;
+    int    i;
 
-	i = 0;
-	while (s[i] != '\n' && s[i])
-		i++;
-	return (i);
+    i = 0;
+    while (s[i])
+    {
+      if(s[i] == '\n')
+        return ++i;
+        i++;
+    }
+    return (i);
 }
 
 int	check(char *s)
@@ -51,9 +55,9 @@ char	*ft_strdup(char *s)
 	char	*str;
 	int		i;
 
-	// if (s == NULL)
-	// 	return (NULL);
 	str = (char *)malloc(count_s(s) + 1);
+	if(!str)
+		return (NULL);
 	i = 0;
 	while (s[i])
 	{
@@ -72,7 +76,7 @@ char	*join_line(char *s1, char *s2)
 
 	if (!s1)
 		return (ft_strdup(s2));
-	l = (char *)malloc(count_s(s1) + count_s(s2) + 1);
+	l = (char *)malloc((size_t)count_s(s1) + (size_t)count_s(s2) + 2);
 	if(!l)
 		return (NULL);
 	i = 0;
@@ -83,11 +87,8 @@ char	*join_line(char *s1, char *s2)
 	}
 	j = 0;
 	while (s2[j])
-	{
-		l[i] = s2[j];
-		j++;
-		i++;
-	}
+		l[i++] = s2[j++];
+	free(s1);
 	l[i] = 0;
 	return (l);
 }
