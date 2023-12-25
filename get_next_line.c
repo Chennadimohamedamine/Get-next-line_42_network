@@ -6,23 +6,21 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:24 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/20 06:01:57 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/25 06:03:45 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*get_line_newline(char *v, char *s)
+static char	*get_line_newline(char **v ,char *s)
 {
 	char	*str;
-	int		i;
-	int		j;
-
-	str = (char *)malloc(BUFFER_SIZE + 1);
-	if(!str)
-		return (NULL);
+	int i;
+	
 	i = 0;
-	while (s[i])
+	str = (char *)malloc(count_s(s,1)+ 1);
+	i = 0;
+	while (s && s[i])
 	{
 		if(s[i] == '\n'){
 			str[i++] = '\n';
@@ -32,89 +30,98 @@ static char	*get_line_newline(char *v, char *s)
 		i++;
 	}
 	str[i] = '\0';
-	j = 0;
-	while (s[i])
-		v[j++] = s[i++];
-	v[j] = '\0';
-	return (str);
-}
-
-// char *get_line_newline(char *v, char *s, int r) {
-//     char *str;
-//     int i, j;
-
-//     str = (char *)malloc(r + 1); // Allocate memory for the entire string
-//     i = 0;
-//     while (s[i] && s[i] != '\n') {
-//         str[i] = s[i];
-//         i++;
-//     }
-//     if (s[i] == '\n') {
-//         str[i++] = '\n';
-//     }
-//     str[i] = '\0'; 
-//     j = 0;
-//     while (i < r)
-//         v[j++] = s[i++];
-//     v[j] = '\0'; 
-//     return str;
-// }
-static char	*get_line(char *v, char *l, char *s)
-{
-	char *newline;
-	char *line;
-	if(v[0] != 0 && !l){
-		l = get_line_newline(v,v);
+	s += i;
+	if(s!= NULL)
+		*v = ft_strdup(s);
+	if(count_s(*v,2) == 0){
+		free(*v);
 	}
-	if(check(s))
-	{
-		newline = get_line_newline(v,s);
-		line = join_line(l,newline);
-		return (free(newline),line);
-	}
-	else
-		line = join_line(l,s);
-	return (line);
+	return  (str);
 }
-
-static char	*read_line(char *v, int fd)
+static char	*ft_get_line(char **s,char *s1)
 {
-	char	*line;
-	char	*str;
+    char *newline = NULL;
+    char *line = NULL;
+	char *buffer;
+    int g = 0;
+    if (*s != NULL) {
+      	if(check(*s))
+    		g = 1;
+      		newline = get_line_newline(&(*s), *s);
+    	}
+		if(g == 1 ){ 
+			 *s = join_line(*s,s1);
+		return newline;
+      }
+	if(s1 != NULL)
+    	line = get_line_newline(&(*s), s1);
+	buffer = join_line(newline, line);
+	if(buffer[0] == 0)
+		return (freemery(NULL,buffer));
+	
+	// if(newline != NULL)
+	// 	free(newline);
+    return (free(line),buffer);
+}
+char	*read_line(int fd)
+{
+	char	*buffer;
 	int		r;
+	char	*str;
 
 	str = (char *)malloc((size_t)BUFFER_SIZE + 1);
 	if(!str)
 		return (NULL);
 	r = 1;
-	line = NULL;
+	buffer = NULL;
 	while (r > 0)
 	{
 		r = read(fd,str, BUFFER_SIZE);
 		if (r < 0)
-		{
-			v[0] = 0;
-		 	return (free(str),free(line), NULL);	
-		}
+			return (freemery(str,buffer));
 		str[r] = '\0';
-		line = get_line(v, line, str);
-		if(check(str) || r == 0)
-			break;
+		buffer = join_line(buffer,str);
+		if(!buffer)
+		 	return (freemery(str,buffer));
+        if(check(buffer) || r == 0 )
+          break;
 	}
-	if(line[0] == 0)
-		return (free(str),free(line),NULL);
-	return (free(str), line);
+	if(buffer[0] == 0){
+		return freemery(str,buffer);
+	}
+	return (free(str),buffer);
 }
-
 char	*get_next_line(int fd)
 {
-	static char	v_s[BUFFER_SIZE];
+	static char	*v_s;
+	char		*str;
 	char		*line;
-
+	
 	if (BUFFER_SIZE < 0 || fd < 0)
 		return (NULL);
-	line = read_line(v_s, fd);
-	if(!line)
+	line = NULL;
+	str = read_line(fd);
+	if(!str && !v_s)
 		return (NULL);
+		
+	line = ft_get_line(&v_s, str);
+	if(!line){
+		if(v_s!= NULL)
+			free(v_s);
+		return(freemery(str,line));
+	}
+	free(str);
 	return (line);
 }
+// int main()
+// {
+// 	int fd = open("file5.txt",O_RDONLY);
+// 	char *line;
+// 	for(int i = 0; i < 7;i++){
+// 		line = get_next_line(fd);
+// 		printf("all [%d] : N \n",i);
+// 		printf("\n================== [%d] =================\n",i);
+// 		free(line);
+// 	}
+// 	return 0;
+// }

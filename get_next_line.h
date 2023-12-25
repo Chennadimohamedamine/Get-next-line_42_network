@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 03:24:43 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/20 04:41:26 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/24 23:28:58 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@
 int		search(char *s);
 char	*ft_strdup(char *s);
 int		check(char *s);
-int		count_s(char *s);
+int		count_s(char *s,int f);
 char	*join_line(char *s1, char *s2);
 char	*get_next_line(int fd);
+char *freemery(char *f1,char *f2);
 #endif

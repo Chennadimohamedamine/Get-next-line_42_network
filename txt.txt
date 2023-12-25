@@ -1,0 +1,129 @@
+static char	*get_line_newline(char **v ,char *s)
+{
+	char	*str;
+	int i;
+	
+	i = 0;
+	str = (char *)malloc(count_s(s,1)+ 1);
+	if(!str)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		if(s[i] == '\n'){
+			str[i++] = '\n';
+			break;
+		}
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	s += i;
+	*v = ft_strdup(s);
+	if(*v[0] == 0){
+		free(*v);
+		*v = NULL;
+	}
+	return  (str);
+}
+static char	*ft_get_line(char **s,char *s1)
+{
+    char *newline = NULL;
+    char *line = NULL;
+    int g = 0;
+    if (*s != NULL) {
+      if(check(*s))
+    		g = 1;
+      	newline = get_line_newline(&(*s), *s);
+    }
+    
+	if(g == 1){
+      	line = join_line(*s,s1);
+      	*s = line;
+      	return newline;
+      }
+    line = get_line_newline(&(*s), s1);
+    return join_line(newline, line);
+}
+static char	*read_line(int fd)
+{
+	char	*buffer;
+	int		r;
+	char	*str;
+
+	str = (char *)malloc((size_t)BUFFER_SIZE + 1);
+	if(!str)
+		return (NULL);
+	r = 1;
+	buffer = NULL;
+	while (r > 0)
+	{
+		r = read(fd,str, BUFFER_SIZE);
+		if (r < 0)
+			return (freemery(str,buffer));
+		str[r] = '\0';
+		buffer = join_line(buffer,str);
+		if(!buffer)
+		 	return (freemery(str,buffer));
+        if(check(buffer) || r == 0 )
+          break;
+	}
+	if(buffer[0] == 0){
+		return freemery(str,buffer);
+	}
+	return (buffer);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*v_s;
+	char		*str;
+	char		*line;
+
+	if (BUFFER_SIZE < 0 || fd < 0)
+		return (NULL);
+	line = NULL;
+	str = read_line(fd);
+	if(!str)
+		return (NULL);
+	line = ft_get_line(&v_s, str);
+	
+	if(!line)
+		return(freemery(str,line));
+	free(str);
+	return (line);
+}
+// int main()
+// {
+// 	int fd = open("file5.txt",O_RDONLY);
+// 	char *line;
+// 	//char *line2 = read_line(fd);
+// 	//char *line4 = get_line_newline(line2);
+// 	//char *line3 = rest_line(line2);
+// 	//char *line4 = get_next_line(fd);
+// 	//  char *line1 = get_next_line(fd);
+// 	//  char *line2 = get_next_line(fd);
+// 	//  char *line3 = get_next_line(fd);
+// 	//  char *line4 = get_next_line(fd);
+// 	// char *line5 = get_next_line(fd);
+// 	// char *line10 = get_next_line(fd);
+
+// 	//printf("line :%s",line1);
+// 	for(int i = 0; i < 10;i++){
+// 		line = get_next_line(fd);
+// 		printf("line [%d] : %s\n",i,line);
+// 		free(line);
+// 	}
+// 	// printf("line :%s\n",line7);
+// 	// printf("line :%s",line8);
+// 	// printf("line :%s",line9);
+// 	// printf("line :%s",line10);
+
+// 	//free(line2);
+//    // free(line3);
+//     // free(line5);
+//     // free(line6);
+//     // free(line7);
+
+// 	return 0;
+// }
