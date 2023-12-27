@@ -1,2 +1,120 @@
-dkjfbn;dn;dndkfjbl
-amine
+static char	*get_line_newline(char **v ,char *s)
+{
+	char	*str;
+	int i;
+	
+	i = 0;
+	if(!s)
+		return (NULL);
+	str = (char *)malloc(count_s(s,1)+ 1);
+	i = 0;
+	while (s && s[i])
+	{
+		if(s[i] == '\n'){
+			str[i++] = '\n';
+			break;
+		}
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	s += i;
+	if(s!= NULL)
+		*v = ft_strdup(s);
+	if(count_s(*v,2) == 0){
+		free(*v);
+	}
+	return (str);
+}
+static char	*ft_get_line(char **s,char *s1)
+{
+    char *newline = NULL;
+    char *line = NULL;
+	char *buffer;
+    int g = 0;
+    if (*s != NULL){
+      	if(check(*s))
+    		g = 1;
+      	newline = get_line_newline(&(*s), *s);
+		if(g == 1 ){ 
+			 *s = join_line(*s,s1);
+		return newline;
+      }
+	  }
+	if(s1 != NULL)
+    	line = get_line_newline(&(*s), s1);
+	buffer = join_line(newline, line);
+	if(buffer[0] == 0)
+		return (freemery(*s,buffer));
+	freemery(NULL,line);
+    return (buffer);
+}
+
+
+
+
+
+if (*s != NULL){
+      	if(check(*s))
+    		g = 1;
+      	newline = get_line_newline(&(*s), *s);
+		if(g == 1 ){ 
+			 *s = join_line(*s,s1);
+		return newline;
+      }
+	  }
+
+	  static char	*get_line_newline(char **v ,char *s)
+{
+	char	*str;
+	int i;
+	
+	i = 0;
+	if(!s)
+		return (free(s), NULL);
+	str = (char *)malloc(count_s(s,1)+ 1);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (s && s[i])
+	{
+		if(s[i] == '\n'){
+			str[i++] = '\n';
+			break;
+		}
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	s += i;
+	// free(*v);
+	if(s!= NULL)
+		*v = ft_strdup(s);
+	// if(count_s(*v,2) == 0){
+	// 	free(*v);
+	// }
+	return (str);
+}
+static char	*ft_get_line(char **s,char *s1)
+{
+    char *newline = NULL;
+    char *line = NULL;
+	char *buffer;
+    int g = 0;
+    if (*s != NULL){
+      	if(check(*s))
+    		g = 1;
+      	newline = get_line_newline(&(*s), *s);
+		if(g == 1 ){ 
+			 *s = join_line(*s,s1);
+		return newline;
+      }
+	  }
+	if(s1 != NULL)
+    	line = get_line_newline(&(*s), s1);
+	buffer = join_line(newline, line);
+	if(buffer[0] == 0)
+		return (freemery(NULL,buffer));
+	freemery(NULL,line);
+    return (buffer);
+}

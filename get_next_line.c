@@ -6,19 +6,23 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:24 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/25 06:03:45 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/27 09:12:35 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*get_line_newline(char **v ,char *s)
+char	*get_line_newline(char *s ,int *r)
 {
 	char	*str;
 	int i;
 	
+	if(!s)
+		return NULL;
 	i = 0;
 	str = (char *)malloc(count_s(s,1)+ 1);
+	if (!str)
+		return (NULL);
 	i = 0;
 	while (s && s[i])
 	{
@@ -30,39 +34,60 @@ static char	*get_line_newline(char **v ,char *s)
 		i++;
 	}
 	str[i] = '\0';
-	s += i;
-	if(s!= NULL)
-		*v = ft_strdup(s);
-	if(count_s(*v,2) == 0){
-		free(*v);
-	}
-	return  (str);
+	if(s[i] != '\0')
+		*r = i;
+	return (str);
 }
-static char	*ft_get_line(char **s,char *s1)
+char *ft_rest_line(char **s, char *s1, int *g)
 {
-    char *newline = NULL;
-    char *line = NULL;
-	char *buffer;
-    int g = 0;
-    if (*s != NULL) {
-      	if(check(*s))
-    		g = 1;
-      		newline = get_line_newline(&(*s), *s);
-    	}
-		if(g == 1 ){ 
-			 *s = join_line(*s,s1);
-		return newline;
-      }
-	if(s1 != NULL)
-    	line = get_line_newline(&(*s), s1);
-	buffer = join_line(newline, line);
-	if(buffer[0] == 0)
-		return (freemery(NULL,buffer));
-	
-	// if(newline != NULL)
-	// 	free(newline);
-    return (free(line),buffer);
+    char *str;
+    char *temp;
+    int r;
+
+	r = 0;
+    if (check(*s)) {
+        str = get_line_newline(*s, &r);
+        temp = strdup((*s) + r);
+        *s = NULL;
+        temp = join_line(temp, s1);
+        *s = strdup(temp);
+        *g = 1;
+        free(temp);
+        return str;
+    }
+    str = strdup(*s);
+	*s = NULL;
+    return str;
 }
+char *ft_get_line(char **s, char *s1)
+{
+    char *line;
+    char *restline;
+    char *temp;
+    int r;
+    
+	r = 0;
+    restline = NULL;
+	temp = NULL;
+    if (*s != NULL)
+        restline = ft_rest_line(s, s1, &r);
+    if (r  == 1)
+        return restline;
+    temp = get_line_newline(s1, &r);
+	if(!temp && *s != NULL)
+		*s = NULL;
+    if (r > 0) {
+        s1 += r;
+        *s = strdup(s1);
+    }
+    line = join_line(restline, temp);
+    if (line[0] == 0 || !line){
+        return freemery(restline, temp);
+	}
+    freemery(NULL,temp);
+    return line;
+}
+
 char	*read_line(int fd)
 {
 	char	*buffer;
@@ -96,32 +121,30 @@ char	*get_next_line(int fd)
 	static char	*v_s;
 	char		*str;
 	char		*line;
-	
-	if (BUFFER_SIZE < 0 || fd < 0)
+
+	if (BUFFER_SIZE < 0 || fd < 0 || read(fd,v_s,0) < 0)
 		return (NULL);
 	line = NULL;
 	str = read_line(fd);
 	if(!str && !v_s)
 		return (NULL);
-		
 	line = ft_get_line(&v_s, str);
 	if(!line){
-		if(v_s!= NULL)
-			free(v_s);
 		return(freemery(str,line));
 	}
 	free(str);
 	return (line);
 }
-// int main()
-// {
-// 	int fd = open("file5.txt",O_RDONLY);
-// 	char *line;
-// 	for(int i = 0; i < 7;i++){
-// 		line = get_next_line(fd);
-// 		printf("all [%d] : N \n",i);
-// 		printf("\n================== [%d] =================\n",i);
-// 		free(line);
-// 	}
-// 	return 0;
-// }
+
+int main(){
+	int fd = open("files/alternate_line_nl_with_nl",O_RDONLY);
+	char *line;
+	for(int i = 0; i < 10;i++){
+		line = get_next_line(fd);
+		printf("\n================== [%d] =================\n",i+1);
+		printf("all [%d] : %s \n",i+1,line);
+		free(line);
+	}
+
+	return 0;
+}
