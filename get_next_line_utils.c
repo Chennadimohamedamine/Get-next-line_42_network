@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:41 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/27 08:11:22 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/28 01:21:48 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*ft_strdup(char *s)
 	char	*str;
 	int		i;
 	if(!s)
-		return 0;
+		return NULL;
 	str = (char *)malloc(count_s(s,2) + 1);
 	if(!str)
 		return (NULL);

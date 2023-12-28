@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:24 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/27 09:12:35 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/28 03:22:46 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,17 @@ char *ft_rest_line(char **s, char *s1, int *g)
     int r;
 
 	r = 0;
+	str = NULL;
     if (check(*s)) {
+		temp = NULL;
         str = get_line_newline(*s, &r);
-        temp = strdup((*s) + r);
+		if(r != 0)
+        	temp = strdup((*s) + r);
         *s = NULL;
         temp = join_line(temp, s1);
+		if(!temp)
+			return str;
+		free(*s);
         *s = strdup(temp);
         *g = 1;
         free(temp);
@@ -68,22 +74,18 @@ char *ft_get_line(char **s, char *s1)
     
 	r = 0;
     restline = NULL;
-	temp = NULL;
     if (*s != NULL)
         restline = ft_rest_line(s, s1, &r);
     if (r  == 1)
         return restline;
     temp = get_line_newline(s1, &r);
-	if(!temp && *s != NULL)
-		*s = NULL;
-    if (r > 0) {
+	if(!temp)
+		return restline;
+    if (r > 0){
         s1 += r;
         *s = strdup(s1);
     }
     line = join_line(restline, temp);
-    if (line[0] == 0 || !line){
-        return freemery(restline, temp);
-	}
     freemery(NULL,temp);
     return line;
 }
@@ -118,33 +120,30 @@ char	*read_line(int fd)
 }
 char	*get_next_line(int fd)
 {
-	static char	*v_s;
+	static char	*s;
 	char		*str;
 	char		*line;
 
-	if (BUFFER_SIZE < 0 || fd < 0 || read(fd,v_s,0) < 0)
+	if (BUFFER_SIZE < 0 || fd < 0 || read(fd,s,0) < 0)
 		return (NULL);
 	line = NULL;
 	str = read_line(fd);
-	if(!str && !v_s)
+	if(!str && !s)
 		return (NULL);
-	line = ft_get_line(&v_s, str);
-	if(!line){
-		return(freemery(str,line));
-	}
+	line = ft_get_line(&s, str);
 	free(str);
 	return (line);
 }
 
-int main(){
-	int fd = open("files/alternate_line_nl_with_nl",O_RDONLY);
-	char *line;
-	for(int i = 0; i < 10;i++){
-		line = get_next_line(fd);
-		printf("\n================== [%d] =================\n",i+1);
-		printf("all [%d] : %s \n",i+1,line);
-		free(line);
-	}
+// int main(){
+// 	int fd = open("files/multiple_nlx5",O_RDONLY);
+// 	char *line;
+// 	for(int i = 0; i < 11;i++){
+// 		line = get_next_line(fd);
+// 		printf("all [%d] : %s \n",i+1,line);
+// 		printf("\n================== [%d] =================\n",i+1);
+// 		free(line);
+// 	}
 
-	return 0;
-}
+// 	return 0;
+// }
