@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/08 11:00:41 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/29 04:51:34 by mochenna         ###   ########.fr       */
+/*   Created: 2023/12/29 01:40:20 by mochenna          #+#    #+#             */
+/*   Updated: 2023/12/29 04:54:13 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	count_s(char *s, int f)
 {

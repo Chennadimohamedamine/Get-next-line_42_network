@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/08 11:00:24 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/29 04:36:23 by mochenna         ###   ########.fr       */
+/*   Created: 2023/12/29 01:39:42 by mochenna          #+#    #+#             */
+/*   Updated: 2023/12/29 04:58:05 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_line_newline(char *s)
 {
@@ -94,10 +94,10 @@ char	*read_line(int fd, char *rset)
 
 char	*get_next_line(int fd)
 {
-	static char	*str;
+	static char	*str[10240];
 	char		*line;
 
-	if (BUFFER_SIZE < 0 || fd < 0 || read(fd, str, 0) < 0)
+	if (BUFFER_SIZE < 0 || fd < 0 || read(fd, str, 0) < 0 || fd < 10240)
 		return (NULL);
 	line = NULL;
 	str = read_line(fd, str);
