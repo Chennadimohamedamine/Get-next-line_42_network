@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 01:39:42 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/29 04:58:05 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/29 05:27:05 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,13 @@ char	*get_next_line(int fd)
 	static char	*str[10240];
 	char		*line;
 
-	if (BUFFER_SIZE < 0 || fd < 0 || read(fd, str, 0) < 0 || fd < 10240)
+	if (BUFFER_SIZE < 0 || fd < 0 || read(fd, str[fd], 0) < 0 || fd < 10240)
 		return (NULL);
 	line = NULL;
-	str = read_line(fd, str);
-	if (!str || str[0] == 0)
-		return (freemery(str, NULL));
-	line = get_line_newline(str);
-	str = rest_line(str);
+	str[fd] = read_line(fd, str[fd]);
+	if (!str[fd] || str[fd][0] == 0)
+		return (freemery(str[fd], NULL));
+	line = get_line_newline(str[fd]);
+	str[fd] = rest_line(str[fd]);
 	return (line);
 }
