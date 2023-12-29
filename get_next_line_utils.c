@@ -6,7 +6,7 @@
 /*   By: mochenna <mochenna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 11:00:41 by mochenna          #+#    #+#             */
-/*   Updated: 2023/12/28 01:21:48 by mochenna         ###   ########.fr       */
+/*   Updated: 2023/12/29 01:18:08 by mochenna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ char	*ft_strdup(char *s)
 	int		i;
 	if(!s)
 		return NULL;
-	str = (char *)malloc(count_s(s,2) + 1);
+	size_t len = count_s(s,2) + 1;
+	str = (char *)malloc(len);
 	if(!str)
 		return (NULL);
 	i = 0;
@@ -70,14 +71,8 @@ char	*ft_strdup(char *s)
 		i++;
 	}
 	str[i] = 0;
-	// if(str[0] == 0 )
-	// {
-	// 		free(str);
-	// 		return 	NULL;
-	// }
 	return (str);
 }
-
 char	*join_line(char *s1, char *s2)
 {
 	char	*l;
